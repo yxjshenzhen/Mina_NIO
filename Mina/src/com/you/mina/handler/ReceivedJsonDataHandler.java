@@ -22,18 +22,20 @@ public class ReceivedJsonDataHandler extends IoHandlerAdapter {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					try {
-						//获取对象如果没有则等待
-						EquipmentBean bean = queue.take();
-	
-						if (sqlUtil.addEquipmentBean(bean)) {
-							//插入成功处理方案
-						} else {
-							//插入失败处理方案
+					while (true) {
+						try {
+							//获取对象如果没有则等待
+							EquipmentBean bean = queue.take();
+		
+							if (sqlUtil.addEquipmentBean(bean)) {
+								//插入成功处理方案
+							} else {
+								//插入失败处理方案
+							}
+							
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
-						
-					} catch (InterruptedException e) {
-						e.printStackTrace();
 					}
 				}
 			}).start();
