@@ -6,12 +6,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.mina.core.service.IoAcceptor;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
+import com.you.mina.handler.ReceivedJsonDataHandler;
 import com.you.mina.handler.TimeServerHandler;
 
 public class MinaTimeServer {
@@ -35,8 +37,11 @@ public class MinaTimeServer {
 		acceptor.getFilterChain().addLast("logger", new LoggingFilter());
 		//acceptor.getFilterChain().addLast("codec",new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));// 指定编码过滤器
 		acceptor.getFilterChain().addLast("codec",new ProtocolCodecFilter(new TextLineCodecFactory()));//支持中文
-		acceptor.setHandler(new TimeServerHandler());// 指定业务逻辑处理器
+		acceptor.setHandler(new ReceivedJsonDataHandler());// 指定业务逻辑处理器
 		acceptor.setDefaultLocalAddress(new InetSocketAddress(PORT));// 设置端口号
+		//下面两行设置摘自官网样例
+		acceptor.getSessionConfig().setReadBufferSize( 2048 );
+	    acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
 		try {
 			acceptor.bind();
 		} catch (IOException e) {
@@ -73,7 +78,5 @@ public class MinaTimeServer {
 			session = (IoSession)conMap.get(key);
 			session.write("" + key.toString());
 		}
-		
-		
 	}
 }

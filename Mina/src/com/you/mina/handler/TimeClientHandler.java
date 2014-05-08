@@ -10,7 +10,8 @@ public class TimeClientHandler extends IoHandlerAdapter {
 	} 
 	@Override 
 	public void messageReceived(IoSession session, Object message) throws Exception { 
-		System.out.println(message);//显示接收到的消息 
+		//显示接收到的消息 
+		System.out.println(message);
 	}
 
 }

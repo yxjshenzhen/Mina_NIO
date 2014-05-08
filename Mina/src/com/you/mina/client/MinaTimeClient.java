@@ -19,12 +19,13 @@ public class MinaTimeClient {
 		connector.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new TextLineCodecFactory()));
 		connector.setConnectTimeout(30); 
 		connector.setHandler(new TimeClientHandler());//设置事件处理器 
-		ConnectFuture cf = connector.connect(new InetSocketAddress("127.0.0.1", 9123));//建立连接 
+		ConnectFuture cf = connector.connect(new InetSocketAddress("112.124.109.124", 9123));//建立连接 
 		cf.awaitUninterruptibly();//等待连接创建完成 
-		cf.getSession().write("hello");//发送消息 
+		cf.getSession().write("abvsafdadgagdasggggggggggggggggggggggggggggggaaaaaaaaaaaaa");//发送消息 
 //		cf.getSession().write("quit");//发送消息 
 		cf.getSession().getCloseFuture().awaitUninterruptibly();//等待连接断开 
 		connector.dispose(); 
+		
 		}
 
 }

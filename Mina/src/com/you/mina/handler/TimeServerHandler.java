@@ -18,11 +18,13 @@ public class TimeServerHandler extends IoHandlerAdapter {
 			throws Exception {
 		String str = message.toString();
 		if (str.trim().equalsIgnoreCase("quit")) {
-			session.close();// 结束会话
+			// 结束会话
+			session.close();
 			return;
 		}
 		Date date = new Date();
-		session.write(date.toString());// 返回当前时间的字符串
+		// 返回当前时间的字符串
+		session.write(date.toString());
 		System.out.println("Message written..." + str);
 	}
 
