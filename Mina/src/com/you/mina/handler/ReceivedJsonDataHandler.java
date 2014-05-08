@@ -2,6 +2,8 @@ package com.you.mina.handler;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -16,30 +18,29 @@ public class ReceivedJsonDataHandler extends IoHandlerAdapter {
 	//阻塞队列防止线程冲突
 	private BlockingQueue<EquipmentBean> queue = new LinkedBlockingQueue<EquipmentBean>();
 	private SQLUtil sqlUtil = new SQLUtil();
+	private Executor pool = Executors.newFixedThreadPool(50);
 	
 	public ReceivedJsonDataHandler() {
-		for (int i= 0; i < 5; i++) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					while (true) {
-						try {
-							//获取对象如果没有则等待
-							EquipmentBean bean = queue.take();
-		
-							if (sqlUtil.addEquipmentBean(bean)) {
-								//插入成功处理方案
-							} else {
-								//插入失败处理方案
-							}
-							
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+		pool.execute(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						//获取对象如果没有则等待
+						EquipmentBean bean = queue.take();
+	
+						if (sqlUtil.addEquipmentBean(bean)) {
+							//插入成功处理方案
+						} else {
+							//插入失败处理方案
 						}
+						
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
-			}).start();
-		}
+			}
+		});
 	}
 	
 	@Override
