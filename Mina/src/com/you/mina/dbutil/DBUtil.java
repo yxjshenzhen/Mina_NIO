@@ -28,7 +28,6 @@ public class DBUtil {
 	
 	private static final String SQLSERVER_USERNAME = "root";// sqlserver 数据库用户名
 	private static final String SQLSERVER_PASSWORD = "123456";// sqlserver 数据库密�?
-
 	/**
 	 * 获取SQLSERVER数据库连�?
 	 * @return 数据库的连接

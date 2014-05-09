@@ -18,29 +18,30 @@ public class ReceivedJsonDataHandler extends IoHandlerAdapter {
 	//阻塞队列防止线程冲突
 	private BlockingQueue<EquipmentBean> queue = new LinkedBlockingQueue<EquipmentBean>();
 	private SQLUtil sqlUtil = new SQLUtil();
-	private Executor pool = Executors.newFixedThreadPool(50);
 	
 	public ReceivedJsonDataHandler() {
-		pool.execute(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						//获取对象如果没有则等待
-						EquipmentBean bean = queue.take();
-	
-						if (sqlUtil.addEquipmentBean(bean)) {
-							//插入成功处理方案
-						} else {
-							//插入失败处理方案
+		for (int i = 0; i < 50; i++) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (true) {
+						try {
+							//获取对象如果没有则等待
+							EquipmentBean bean = queue.take();
+		
+							if (sqlUtil.addEquipmentBean(bean)) {
+								//插入成功处理方案
+							} else {
+								//插入失败处理方案
+							}
+							
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
-						
-					} catch (InterruptedException e) {
-						e.printStackTrace();
 					}
 				}
-			}
-		});
+			}).start();	
+		}
 	}
 	
 	@Override
